@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flightapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flightapp
+  template:
+    metadata:
+      labels:
+        app: flightapp
+    spec:
+      containers:
+        - name: flightapp
+          image: flightapp:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/flightdb
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: postgres
+            - name: JAVA_TOOL_OPTIONS
+              value: -Duser.timezone=UTC
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flightapp
+spec:
+  type: NodePort
+  selector:
+    app: flightapp
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
