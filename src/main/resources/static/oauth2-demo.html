@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>OAuth 2.0 + OIDC Demo</title>
+</head>
+<body>
+
+  <div id="login-panel" style="display:none">
+    <a href="/oauth2/authorization/google">Увійти через Google</a>
+  </div>
+
+  <div id="profile-panel" style="display:none">
+    <img id="avatar" src="" alt="фото" />
+    <p id="user-name"></p>
+    <p id="user-email"></p>
+    <pre id="all-claims"></pre>
+    <button onclick="doLogout()">Вийти</button>
+  </div>
+
+  <script>
+    fetch('/me', { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+      .then(res => {
+        if (!res.ok) {
+          document.getElementById('login-panel').style.display = 'block';
+          return null;
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (!data) return;
+        document.getElementById('profile-panel').style.display = 'block';
+        document.getElementById('avatar').src             = data.picture || '';
+        document.getElementById('user-name').textContent  = data.name;
+        document.getElementById('user-email').textContent = data.email;
+        document.getElementById('all-claims').textContent = JSON.stringify(data, null, 2);
+      });
+
+    function doLogout() {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/logout';
+      document.body.appendChild(form);
+      form.submit();
+    }
+  </script>
+
+</body>
+</html>
