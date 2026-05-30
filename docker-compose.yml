@@ -1,29 +1,14 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: flightdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      TZ: UTC
-      PGTZ: UTC
-    ports:
-      - "5432:5432"
-    networks:
-      - app-network
-
   app:
     build: .
     ports:
       - "8080:8080"
-    depends_on:
-      - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/flightdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      DB_URL: jdbc:postgresql://flightdb.cn8owku0y7or.eu-north-1.rds.amazonaws.com:5432/flightdb
+      DB_USERNAME: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
     networks:
       - app-network
 

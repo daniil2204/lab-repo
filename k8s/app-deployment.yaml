@@ -19,12 +19,15 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres:5432/flightdb
-            - name: SPRING_DATASOURCE_USERNAME
+            - name: DB_URL
+              value: jdbc:postgresql://flightdb.cn8owku0y7or.eu-north-1.rds.amazonaws.com:5432/flightdb
+            - name: DB_USERNAME
               value: postgres
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: postgres
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
             - name: JAVA_TOOL_OPTIONS
               value: -Duser.timezone=UTC
 ---
